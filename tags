@@ -1,0 +1,20 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/f43463a/
+^:dev/after-load	src/atom_cljfmt/core.cljs	/^(defn ^:dev\/after-load after []$/;"	f	namespace:atom-cljfmt.core
+^:dev/before-load	src/atom_cljfmt/core.cljs	/^(defn ^:dev\/before-load before []$/;"	f	namespace:atom-cljfmt.core
+activate	src/atom_cljfmt/core.cljs	/^(defn activate []$/;"	f	namespace:atom-cljfmt.core
+atom-cljfmt.core	src/atom_cljfmt/core.cljs	/^(ns atom-cljfmt.core$/;"	n
+deactivate	src/atom_cljfmt/core.cljs	/^(defn deactivate []$/;"	f	namespace:atom-cljfmt.core
+dispose!	src/atom_cljfmt/core.cljs	/^(defn dispose! [system-ref]$/;"	f	namespace:atom-cljfmt.core
+format	src/atom_cljfmt/core.cljs	/^(defn format [^js e]$/;"	f	namespace:atom-cljfmt.core
+make-default-system	src/atom_cljfmt/core.cljs	/^(defn make-default-system []$/;"	f	namespace:atom-cljfmt.core
+register!	src/atom_cljfmt/core.cljs	/^(defn register! []$/;"	f	namespace:atom-cljfmt.core
+register-command!	src/atom_cljfmt/core.cljs	/^(defn register-command! [system-ref command]$/;"	f	namespace:atom-cljfmt.core
+register-subscription!	src/atom_cljfmt/core.cljs	/^(defn register-subscription! [system-ref disposable]$/;"	f	namespace:atom-cljfmt.core
+success-notification	src/atom_cljfmt/core.cljs	/^(defn success-notification [s]$/;"	f	namespace:atom-cljfmt.core
