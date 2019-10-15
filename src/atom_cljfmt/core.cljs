@@ -71,9 +71,13 @@
         ^js range  (some-> editor (buffer-range))]
     (when range
       (let [position (.getCursorScreenPosition editor)
-            text     (.getTextInBufferRange editor range)
-            text     (cljfmt/reformat-string text)]
-        (.setTextInBufferRange editor range text)
+
+            ;; It should work even if there's no selection.
+            text (or (.getTextInBufferRange editor range)
+                     (.getText editor))
+
+            pretty (cljfmt/reformat-string text)]
+        (.setTextInBufferRange editor range pretty)
         (.setCursorScreenPosition editor position)))))
 
 
