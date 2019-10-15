@@ -20,6 +20,9 @@
       (.getBuffer)
       (.getRange)))
 
+(defn selected-buffer-range [^js editor]
+  (.getSelectedBufferRange editor))
+
 (defn current-scope [^js editor]
   (-> editor
       (.getGrammar)
@@ -67,18 +70,13 @@
 
 
 (defn format [^js event]
-  (let [^js editor (active-text-editor)
-        ^js range  (some-> editor (buffer-range))]
-    (when range
-      (let [position (.getCursorScreenPosition editor)
-
-            ;; It should work even if there's no selection.
-            text (or (.getTextInBufferRange editor range)
-                     (.getText editor))
-
-            pretty (cljfmt/reformat-string text)]
-        (.setTextInBufferRange editor range pretty)
-        (.setCursorScreenPosition editor position)))))
+  (when-let [^js editor (active-text-editor)]
+    (let [range    (selected-buffer-range editor)
+          position (.getCursorScreenPosition editor)
+          text     (.getTextInBufferRange editor range)
+          pretty   (cljfmt/reformat-string text)]
+      (.setTextInBufferRange editor range pretty)
+      (.setCursorScreenPosition editor position))))
 
 
 ;; ---
@@ -92,6 +90,7 @@
 
 ;; ---
 ;; DEV
+
 
 (defn ^:dev/before-load before []
   (js/console.log "Before" (clj->js  @system-ref))

@@ -2,7 +2,7 @@
   "context-menu": {
     "atom-text-editor": [
       {
-        "label": "Format with cljfmt",
+        "label": "Format Selection",
         "command": "atom-cljfmt:format"
       }
     ]
@@ -15,7 +15,7 @@
           "label": "cljfmt",
           "submenu": [
             {
-              "label": "Format",
+              "label": "Format Selection",
               "command": "atom-cljfmt:format"
             }
           ]
