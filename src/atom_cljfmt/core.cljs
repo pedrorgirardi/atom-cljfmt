@@ -89,6 +89,10 @@
        (register-command! system-ref)
        (register-subscription! system-ref)))
 
+
+;; ---
+;; DEV
+
 (defn ^:dev/before-load before []
   (js/console.log "Before" (clj->js  @system-ref))
 
@@ -102,6 +106,10 @@
   (js/console.log "After" (clj->js @system-ref))
 
   (success-notification "^:dev/after-load"))
+
+
+;; ---
+
 
 (defn activate []
   (register!)
