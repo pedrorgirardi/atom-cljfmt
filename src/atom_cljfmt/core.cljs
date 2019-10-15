@@ -1,10 +1,34 @@
 (ns atom-cljfmt.core
-  (:require ["atom" :as editor]))
+  (:require
+   ["atom" :as editor]
+   [cljfmt.core :as cljfmt]))
 
-(js/console.log "atom-cljfmt.core" (js/Date.))
+;; ---
+;; API
 
 (def -notifications
   (.-notifications js/atom))
+
+(def -workspace
+  (.-workspace js/atom))
+
+(defn active-text-editor []
+  (.getActiveTextEditor -workspace))
+
+(defn buffer-range [^js editor]
+  (-> editor
+      (.getBuffer)
+      (.getRange)))
+
+(defn current-scope [^js editor]
+  (-> editor
+      (.getGrammar)
+      (.-scopeName)))
+
+
+;; ---
+;; UI
+
 
 (defn success-notification [s]
   (.addSuccess -notifications s))
@@ -27,7 +51,7 @@
 (defn register-command! [system-ref command]
   (let [^js commands (:commands @system-ref)]
     (.add commands "atom-text-editor" (str "atom-cljfmt:" (-> command meta :name))
-                                      #js {:didDispatch (deref command)})))
+          #js {:didDispatch (deref command)})))
 
 (defn register-subscription! [system-ref disposable]
   (let [^js subscriptions (:subscriptions @system-ref)]
@@ -39,10 +63,18 @@
 
 
 ;; ---
+;; COMMANDS
 
 
-(defn format [^js e]
-  (success-notification "Format with cljfmt"))
+(defn format [^js event]
+  (let [^js editor (active-text-editor)
+        ^js range  (some-> editor (buffer-range))]
+    (when range
+      (let [position (.getCursorScreenPosition editor)
+            text     (.getTextInBufferRange editor range)
+            text     (cljfmt/reformat-string text)]
+        (.setTextInBufferRange editor range text)
+        (.setCursorScreenPosition editor position)))))
 
 
 ;; ---
@@ -63,9 +95,9 @@
   (register!))
 
 (defn ^:dev/after-load after []
-  (js/console.log "After" (clj->js  @system-ref))
+  (js/console.log "After" (clj->js @system-ref))
 
-  (success-notification "Reloaded"))
+  (success-notification "^:dev/after-load"))
 
 (defn activate []
   (register!)
