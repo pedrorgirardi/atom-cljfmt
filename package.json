@@ -1,0 +1,23 @@
+{
+  "name": "cljfmt",
+  "main": "./lib/main",
+  "version": "0.1.0",
+  "description": "cljfmt is a tool for formatting Clojure code idiomatically.",
+  "keywords": [
+    "edn",
+    "clojure",
+    "clojurescript"
+  ],
+  "activationCommands": {
+    "atom-workspace": "atom-cljfmt:format"
+  },
+  "repository": "https://github.com/pedrorgirardi/atom-cljfmt",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "shadow-cljs": "^2.8.64"
+  }
+}

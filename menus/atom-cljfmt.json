@@ -1,0 +1,26 @@
+{
+  "context-menu": {
+    "atom-text-editor": [
+      {
+        "label": "Format with cljfmt",
+        "command": "atom-cljfmt:format"
+      }
+    ]
+  },
+  "menu": [
+    {
+      "label": "Packages",
+      "submenu": [
+        {
+          "label": "cljfmt",
+          "submenu": [
+            {
+              "label": "Format",
+              "command": "atom-cljfmt:format"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

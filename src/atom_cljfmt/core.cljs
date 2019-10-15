@@ -1,0 +1,78 @@
+(ns atom-cljfmt.core
+  (:require ["atom" :as editor]))
+
+(js/console.log "atom-cljfmt.core" (js/Date.))
+
+(def -notifications
+  (.-notifications js/atom))
+
+(defn success-notification [s]
+  (.addSuccess -notifications s))
+
+
+;; ---
+
+
+(defn make-default-system []
+  {:commands (.-commands js/atom)
+   :subscriptions (editor/CompositeDisposable.)})
+
+(defonce system-ref
+  (atom (make-default-system)))
+
+
+;; ---
+
+
+(defn register-command! [system-ref command]
+  (let [^js commands (:commands @system-ref)]
+    (.add commands "atom-text-editor" (str "atom-cljfmt:" (-> command meta :name))
+                                      #js {:didDispatch (deref command)})))
+
+(defn register-subscription! [system-ref disposable]
+  (let [^js subscriptions (:subscriptions @system-ref)]
+    (.add subscriptions disposable)))
+
+(defn dispose! [system-ref]
+  (let [^js subscriptions (:subscriptions @system-ref)]
+    (.dispose subscriptions)))
+
+
+;; ---
+
+
+(defn format [^js e]
+  (success-notification "Format with cljfmt"))
+
+
+;; ---
+
+
+(defn register! []
+  (->> #'format
+       (register-command! system-ref)
+       (register-subscription! system-ref)))
+
+(defn ^:dev/before-load before []
+  (js/console.log "Before" (clj->js  @system-ref))
+
+  (dispose! system-ref)
+
+  (reset! system-ref (make-default-system))
+
+  (register!))
+
+(defn ^:dev/after-load after []
+  (js/console.log "After" (clj->js  @system-ref))
+
+  (success-notification "Reloaded"))
+
+(defn activate []
+  (register!)
+
+  (js/console.log "Activated" (clj->js  @system-ref)))
+
+(defn deactivate []
+  (dispose! system-ref)
+
+  (js/console.log "Deactivated" (clj->js  @system-ref)))
