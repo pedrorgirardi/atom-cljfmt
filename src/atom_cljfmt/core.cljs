@@ -4,7 +4,7 @@
    [cljfmt.core :as cljfmt]))
 
 ;; ---
-;; API
+
 
 (def -notifications
   (.-notifications js/atom))
@@ -12,41 +12,24 @@
 (def -workspace
   (.-workspace js/atom))
 
+(def -commands
+  (.-commands js/atom))
+
+(def subscriptions
+  (editor/CompositeDisposable.))
+
 
 ;; ---
-;; UI
 
 
 (defn notify-success [s]
   (.addSuccess -notifications s))
 
 
-;; ---
-
-
-(defn make-default-system []
-  {:commands (.-commands js/atom)
-   :subscriptions (editor/CompositeDisposable.)})
-
-(defonce system-ref
-  (atom (make-default-system)))
-
-
-;; ---
-
-
-(defn register-command! [system-ref command]
-  (let [^js commands (:commands @system-ref)]
-    (.add commands "atom-text-editor" (str "atom-cljfmt:" (-> command meta :name))
-          #js {:didDispatch (deref command)})))
-
-(defn register-subscription! [system-ref disposable]
-  (let [^js subscriptions (:subscriptions @system-ref)]
-    (.add subscriptions disposable)))
-
-(defn dispose! [system-ref]
-  (let [^js subscriptions (:subscriptions @system-ref)]
-    (.dispose subscriptions)))
+(defn register-text-editor-command! [^js registry command]
+  (let [s (str "atom-cljfmt:" (-> command meta :name))
+        f (deref command)]
+    (.add registry "atom-text-editor" s f)))
 
 
 ;; ---
@@ -66,10 +49,9 @@
 ;; ---
 
 
-(defn setup-command! []
-  (->> #'format
-       (register-command! system-ref)
-       (register-subscription! system-ref)))
+(defn init! []
+  (let [disposable (register-text-editor-command! -commands #'format)]
+    (.add subscriptions disposable)))
 
 
 ;; ---
@@ -77,29 +59,29 @@
 
 
 (defn ^:dev/before-load before []
-  (js/console.log "Before" (clj->js  @system-ref))
+  (js/console.log "Dispose..." subscriptions)
 
-  (dispose! system-ref)
+  (.dispose subscriptions)
 
-  (reset! system-ref (make-default-system))
-
-  (setup-command!))
+  (js/console.log "Disposed" subscriptions))
 
 (defn ^:dev/after-load after []
-  (js/console.log "After" (clj->js @system-ref))
+  (init!)
 
-  (notify-success "^:dev/after-load"))
+  (js/console.log "Reloaded" subscriptions)
+
+  (notify-success "Reloaded"))
 
 
 ;; ---
 
 
 (defn activate []
-  (setup-command!)
+  (init!)
 
-  (js/console.log "Activated" (clj->js  @system-ref)))
+  (js/console.log "Activated" subscriptions))
 
 (defn deactivate []
-  (dispose! system-ref)
+  (.dispose subscriptions)
 
-  (js/console.log "Deactivated" (clj->js  @system-ref)))
+  (js/console.log "Deactivated" subscriptions))
