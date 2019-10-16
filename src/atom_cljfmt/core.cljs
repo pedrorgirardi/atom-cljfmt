@@ -21,12 +21,11 @@
 
 (defn format [^js event]
   (when-let [^js editor (.getActiveTextEditor -workspace)]
-    (let [range    (.getSelectedBufferRange editor)
-          position (.getCursorScreenPosition editor)
-          text     (.getTextInBufferRange editor range)
-          pretty   (cljfmt/reformat-string text)]
-      (.setTextInBufferRange editor range pretty)
-      (.setCursorScreenPosition editor position))))
+    (let [range  (.getSelectedBufferRange editor)
+          text   (.getTextInBufferRange editor range)
+          pretty (cljfmt/reformat-string text)
+          range' (.setTextInBufferRange editor range pretty)]
+      (.setSelectedBufferRange editor range'))))
 
 (defn init []
   (let [disposable (.add -commands "atom-text-editor" "atom-cljfmt:format"
