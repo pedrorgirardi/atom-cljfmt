@@ -9,7 +9,7 @@
     "clojurescript"
   ],
   "activationCommands": {
-    "atom-workspace": "atom-cljfmt:format"
+    "atom-text-editor": "atom-cljfmt:format"
   },
   "repository": "https://github.com/pedrorgirardi/atom-cljfmt",
   "license": "MIT",

@@ -1,6 +1,6 @@
 (ns atom-cljfmt.core
   (:require
-   ["atom" :as editor]
+   ["atom" :as atom-env]
    [cljfmt.core :as cljfmt]))
 
 (def -notifications
@@ -13,7 +13,7 @@
   (.-commands js/atom))
 
 (def subscriptions
-  (editor/CompositeDisposable.))
+  (atom-env/CompositeDisposable.))
 
 
 ;; ---
@@ -29,7 +29,9 @@
       (.setCursorScreenPosition editor position))))
 
 (defn init []
-  (let [disposable (.add -commands "atom-text-editor" "atom-cljfmt:format" format)]
+  (let [disposable (.add -commands "atom-text-editor" "atom-cljfmt:format"
+                         #js {:displayName "cljfmt: Format Selection"
+                              :didDispatch format})]
     (.add subscriptions disposable)))
 
 
