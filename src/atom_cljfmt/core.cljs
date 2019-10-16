@@ -22,20 +22,6 @@
 ;; ---
 
 
-(defn notify-success [s]
-  (.addSuccess -notifications s))
-
-
-(defn register-text-editor-command! [^js registry command]
-  (let [s (str "atom-cljfmt:" (-> command meta :name))
-        f (deref command)]
-    (.add registry "atom-text-editor" s f)))
-
-
-;; ---
-;; COMMANDS
-
-
 (defn format [^js event]
   (when-let [^js editor (.getActiveTextEditor -workspace)]
     (let [range    (.getSelectedBufferRange editor)
@@ -45,12 +31,8 @@
       (.setTextInBufferRange editor range pretty)
       (.setCursorScreenPosition editor position))))
 
-
-;; ---
-
-
-(defn init! []
-  (let [disposable (register-text-editor-command! -commands #'format)]
+(defn init []
+  (let [disposable (.add -commands "atom-text-editor" "atom-cljfmt:format" format)]
     (.add subscriptions disposable)))
 
 
@@ -59,29 +41,26 @@
 
 
 (defn ^:dev/before-load before []
-  (js/console.log "Dispose..." subscriptions)
+  (js/console.log "Will dispose..." subscriptions)
 
   (.dispose subscriptions)
 
   (js/console.log "Disposed" subscriptions))
 
 (defn ^:dev/after-load after []
-  (init!)
+  (init)
 
   (js/console.log "Reloaded" subscriptions)
 
-  (notify-success "Reloaded"))
+  (.addSuccess -notifications "Reloaded"))
 
 
 ;; ---
+;; EXPORTS
 
 
 (defn activate []
-  (init!)
-
-  (js/console.log "Activated" subscriptions))
+  (init))
 
 (defn deactivate []
-  (.dispose subscriptions)
-
-  (js/console.log "Deactivated" subscriptions))
+  (.dispose subscriptions))
