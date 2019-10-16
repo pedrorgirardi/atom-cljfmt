@@ -3,9 +3,6 @@
    ["atom" :as editor]
    [cljfmt.core :as cljfmt]))
 
-;; ---
-
-
 (def -notifications
   (.-notifications js/atom))
 
