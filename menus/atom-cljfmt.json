@@ -1,12 +1,4 @@
 {
-  "context-menu": {
-    "atom-text-editor": [
-      {
-        "label": "Format Selection",
-        "command": "atom-cljfmt:format"
-      }
-    ]
-  },
   "menu": [
     {
       "label": "Packages",

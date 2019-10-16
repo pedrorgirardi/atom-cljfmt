@@ -12,28 +12,12 @@
 (def -workspace
   (.-workspace js/atom))
 
-(defn active-text-editor []
-  (.getActiveTextEditor -workspace))
-
-(defn buffer-range [^js editor]
-  (-> editor
-      (.getBuffer)
-      (.getRange)))
-
-(defn selected-buffer-range [^js editor]
-  (.getSelectedBufferRange editor))
-
-(defn current-scope [^js editor]
-  (-> editor
-      (.getGrammar)
-      (.-scopeName)))
-
 
 ;; ---
 ;; UI
 
 
-(defn success-notification [s]
+(defn notify-success [s]
   (.addSuccess -notifications s))
 
 
@@ -70,8 +54,8 @@
 
 
 (defn format [^js event]
-  (when-let [^js editor (active-text-editor)]
-    (let [range    (selected-buffer-range editor)
+  (when-let [^js editor (.getActiveTextEditor -workspace)]
+    (let [range    (.getSelectedBufferRange editor)
           position (.getCursorScreenPosition editor)
           text     (.getTextInBufferRange editor range)
           pretty   (cljfmt/reformat-string text)]
@@ -82,7 +66,7 @@
 ;; ---
 
 
-(defn register! []
+(defn setup-command! []
   (->> #'format
        (register-command! system-ref)
        (register-subscription! system-ref)))
@@ -99,19 +83,19 @@
 
   (reset! system-ref (make-default-system))
 
-  (register!))
+  (setup-command!))
 
 (defn ^:dev/after-load after []
   (js/console.log "After" (clj->js @system-ref))
 
-  (success-notification "^:dev/after-load"))
+  (notify-success "^:dev/after-load"))
 
 
 ;; ---
 
 
 (defn activate []
-  (register!)
+  (setup-command!)
 
   (js/console.log "Activated" (clj->js  @system-ref)))
 

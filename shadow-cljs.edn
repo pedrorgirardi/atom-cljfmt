@@ -3,8 +3,10 @@
  :dependencies [[cljfmt "0.6.4"]]
 
  :builds
- {:dev {:exports {:activate atom-cljfmt.core/activate
-                  :deactivate atom-cljfmt.core/deactivate}
-        :target :node-library
-        :output-dir "lib/js"
-        :output-to "lib/main.js"}}}
+ {:main
+  {:exports
+   {:activate atom-cljfmt.core/activate
+    :deactivate atom-cljfmt.core/deactivate}
+   :target :node-library
+   :output-dir "lib/js"
+   :output-to "lib/main.js"}}}
